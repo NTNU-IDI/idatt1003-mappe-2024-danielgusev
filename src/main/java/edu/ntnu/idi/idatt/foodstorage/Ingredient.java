@@ -1,9 +1,11 @@
 package edu.ntnu.idi.idatt.foodstorage;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Represents an ingredient with a name, quantity, unit, best-before date, and price per unit.
+ * The ingredient class represents a grocery item or ingredient. It holds information about the
+ * ingredient´s name, quantity, unit of measurement, best-before date, and price per unit.
  */
 
 public class Ingredient {
@@ -13,6 +15,11 @@ public class Ingredient {
   String unit;
   Date bestBeforeDate;
   double pricePerUnit;
+
+  /**
+   * Date formatter for parsing and formatting dates.
+   */
+  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
   /**
    * Constructs an Ingredient with the specified name, quantity, unit, and best-before date.
@@ -27,21 +34,24 @@ public class Ingredient {
   public Ingredient(String name, double quantity, String unit, Date bestBeforeDate,
       Double pricePerUnit) {
 
-    if (name == null || name.isEmpty()) {
+    if (name == null || name.trim().isEmpty()) {
       throw new IllegalArgumentException("Ingredient name cannot be null or empty");
     }
     if (quantity < 0) {
       throw new IllegalArgumentException("Ingredient quantity cannot be negative");
     }
+    if (unit == null || unit.trim().isEmpty()) {
+      throw new IllegalArgumentException("Ingredient unit cannot be null or empty");
+    }
     if (pricePerUnit < 0) {
       throw new IllegalArgumentException("Ingredient price per unit cannot be negative");
     }
 
-    this.name = name;
+    this.name = name.trim();
     this.quantity = quantity;
-    this.unit = unit;
-    this.bestBeforeDate = bestBeforeDate;
+    this.unit = unit.trim();
     this.pricePerUnit = pricePerUnit;
+    this.bestBeforeDate = new Date(bestBeforeDate.getTime());
   }
 
   public String getName() {
