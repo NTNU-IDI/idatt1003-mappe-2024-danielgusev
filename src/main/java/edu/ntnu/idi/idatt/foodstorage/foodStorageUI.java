@@ -37,7 +37,7 @@ public class foodStorageUI {
   }
 
   /**
-   * Prints the details of the ingredient
+   * Prints the details of the ingredient.
    *
    * @param ingredient the ingredient to print
    */

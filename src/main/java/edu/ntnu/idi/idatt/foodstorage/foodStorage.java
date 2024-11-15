@@ -158,6 +158,31 @@ public class foodStorage {
   }
 
   /**
+   * This is mainly for the recipe class since the Ingredients only have name and unit.
+   *
+   * @param name name of the ingredient in the recipe
+   * @param unit unit of the ingredient in the recipe
+   * @return returns the desired ingredient
+   */
+  public Ingredient findIngredientByNameAndUnit(String name, String unit) {
+    if (name == null || unit == null) {
+      return null;
+    }
+
+    String trimmedName = name.trim().toLowerCase();
+    String trimmedUnit = unit.trim().toLowerCase();
+
+    for (Ingredient ingredient : ingredientMap.values()) {
+      if (ingredient.getName().trim().toLowerCase().equals(trimmedName)
+          &&
+          ingredient.getUnit().trim().toLowerCase().equals(trimmedUnit)) {
+        return ingredient;
+      }
+    }
+    return null;
+  }
+
+  /**
    * Returns a list of all ingredients in the storage.
    *
    * @return an array of all ingredients
