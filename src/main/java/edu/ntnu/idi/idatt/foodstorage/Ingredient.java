@@ -1,20 +1,20 @@
 package edu.ntnu.idi.idatt.foodstorage;
 
+import edu.ntnu.idi.idatt.utils.InputValidation;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * The ingredient class represents a grocery item or ingredient. It holds information about the
- * ingredient´s name, quantity, unit of measurement, best-before date, and price per unit.
+ * The Ingredient class represents a grocery item or ingredient. It holds information about the
+ * ingredient's name, quantity, unit of measurement, best-before date, and price per unit.
  */
-
 public class Ingredient {
 
-  String name;
-  double quantity;
-  String unit;
-  Date bestBeforeDate;
-  double pricePerUnit;
+  private String name;
+  private double quantity;
+  private String unit;
+  private Date bestBeforeDate;
+  private double pricePerUnit;
 
   /**
    * Date formatter for parsing and formatting dates.
@@ -22,30 +22,24 @@ public class Ingredient {
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
   /**
-   * Constructs an Ingredient with the specified name, quantity, unit, and best-before date.
-   * Initializes the price per unit to 0 by default.
+   * Constructs an Ingredient with the specified name, quantity, unit, best-before date, and price
+   * per unit.
    *
    * @param name           the name of the ingredient
    * @param quantity       the amount of the ingredient
    * @param unit           the unit of measurement for the ingredient
    * @param bestBeforeDate the best-before date of the ingredient
+   * @param pricePerUnit   the price per unit
+   * @throws IllegalArgumentException if any parameter is invalid
    */
-
   public Ingredient(String name, double quantity, String unit, Date bestBeforeDate,
-      Double pricePerUnit) {
+      double pricePerUnit) {
 
-    if (name == null || name.trim().isEmpty()) {
-      throw new IllegalArgumentException("Ingredient name cannot be null or empty");
-    }
-    if (quantity < 0) {
-      throw new IllegalArgumentException("Ingredient quantity cannot be negative");
-    }
-    if (unit == null || unit.trim().isEmpty()) {
-      throw new IllegalArgumentException("Ingredient unit cannot be null or empty");
-    }
-    if (pricePerUnit < 0) {
-      throw new IllegalArgumentException("Ingredient price per unit cannot be negative");
-    }
+    InputValidation.validateIngredientName(name);
+    InputValidation.validateIngredientQuantity(quantity);
+    InputValidation.validateIngredientUnit(unit);
+    InputValidation.validatePricePerUnit(pricePerUnit);
+    InputValidation.validateBestBeforeDate(bestBeforeDate);
 
     this.name = name.trim();
     this.quantity = quantity;
@@ -59,7 +53,8 @@ public class Ingredient {
   }
 
   public void setName(String name) {
-    this.name = name;
+    InputValidation.validateIngredientName(name);
+    this.name = name.trim();
   }
 
   public double getQuantity() {
@@ -73,9 +68,7 @@ public class Ingredient {
    * @throws IllegalArgumentException if the specified quantity is negative
    */
   public void setQuantity(double quantity) {
-    if (quantity < 0) {
-      throw new IllegalArgumentException("Ingredient quantity cannot be negative");
-    }
+    InputValidation.validateIngredientQuantity(quantity);
     this.quantity = quantity;
   }
 
@@ -84,7 +77,7 @@ public class Ingredient {
   }
 
   public Date getBestBeforeDate() {
-    return bestBeforeDate;
+    return new Date(bestBeforeDate.getTime());
   }
 
   public double getPricePerUnit() {
@@ -92,12 +85,11 @@ public class Ingredient {
   }
 
   /**
-   * Checks if the ingredient is expired based on the best before date.
+   * Checks if the ingredient is expired based on the best-before date.
    *
    * @return true if expired, otherwise false
    */
   public boolean isExpired() {
-
     return bestBeforeDate != null && bestBeforeDate.before(new Date());
   }
 
@@ -107,14 +99,13 @@ public class Ingredient {
    * @return total value
    */
   public double getTotalValue() {
-
     return quantity * pricePerUnit;
   }
 
   @Override
   public String toString() {
-
-    return name + ":" + quantity + " " + unit + ", Best before: "
-        + bestBeforeDate + ", Price per unit" + pricePerUnit;
+    String dateStr = dateFormat.format(bestBeforeDate);
+    return name + ": " + quantity + " " + unit + ", Best before: "
+        + dateStr + ", Price per unit: " + pricePerUnit;
   }
 }

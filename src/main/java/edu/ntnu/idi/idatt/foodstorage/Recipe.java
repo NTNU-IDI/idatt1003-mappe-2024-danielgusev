@@ -1,7 +1,6 @@
-// Recipe.java
-
 package edu.ntnu.idi.idatt.foodstorage;
 
+import edu.ntnu.idi.idatt.utils.InputValidation;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,24 +30,12 @@ public class Recipe {
   public Recipe(String name, String description, String instructions,
       Map<String, Double> ingredients, Map<String, String> units) {
 
-    if (name == null || name.trim().isEmpty()) {
-      throw new IllegalArgumentException("Recipe name cannot be null or empty.");
-    }
-    if (description == null) {
-      throw new IllegalArgumentException("Description cannot be null.");
-    }
-    if (instructions == null) {
-      throw new IllegalArgumentException("Instructions cannot be null.");
-    }
-    if (ingredients == null || ingredients.isEmpty()) {
-      throw new IllegalArgumentException("Ingredients cannot be null or empty.");
-    }
-    if (units == null || units.isEmpty()) {
-      throw new IllegalArgumentException("Units cannot be null or empty.");
-    }
-    if (ingredients.size() != units.size()) {
-      throw new IllegalArgumentException("Ingredients and unit maps must have the same size.");
-    }
+    InputValidation.validateRecipeName(name);
+    InputValidation.validateDescription(description);
+    InputValidation.validateInstructions(instructions);
+    InputValidation.validateIngredientsMap(ingredients);
+    InputValidation.validateUnitsMap(units);
+    InputValidation.validateIngredientAndUnitsSize(ingredients, units);
 
     this.name = name.trim();
     this.description = description.trim();
@@ -62,14 +49,8 @@ public class Recipe {
       Double quantity = ingredients.get(ingredientName);
       String unit = units.get(ingredientName);
 
-      if (quantity == null || quantity <= 0) {
-        throw new IllegalArgumentException(
-            "Quantity for ingredient '" + ingredientName + "' must be positive.");
-      }
-      if (unit == null || unit.trim().isEmpty()) {
-        throw new IllegalArgumentException(
-            "Unit for ingredient '" + ingredientName + "' cannot be null or empty.");
-      }
+      InputValidation.validateIngredientQuantity(ingredientName, quantity);
+      InputValidation.validateIngredientUnit(ingredientName, unit);
 
       this.ingredients.put(ingredientName.trim().toLowerCase(), quantity);
       this.units.put(ingredientName.trim().toLowerCase(), unit.trim());
@@ -127,7 +108,8 @@ public class Recipe {
    * @param storage the FoodStorage to check against
    * @return true if the recipe can be made, false otherwise
    */
-  public boolean canMake(foodStorage storage) {
+  public boolean canMake(FoodStorage storage) {
+    InputValidation.validateFoodStorage(storage);
     for (String ingredientName : ingredients.keySet()) {
       Double requiredQuantity = ingredients.get(ingredientName);
       String requiredUnit = units.get(ingredientName);
@@ -147,7 +129,8 @@ public class Recipe {
    * @param storage the FoodStorage to check against
    * @return a map of missing ingredient names to required quantities
    */
-  public Map<String, Double> getMissingIngredients(foodStorage storage) {
+  public Map<String, Double> getMissingIngredients(FoodStorage storage) {
+    InputValidation.validateFoodStorage(storage);
     Map<String, Double> missingIngredients = new HashMap<>();
 
     for (String ingredientName : ingredients.keySet()) {

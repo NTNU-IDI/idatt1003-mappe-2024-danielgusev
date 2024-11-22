@@ -1,7 +1,6 @@
-// Cookbook.java
-
 package edu.ntnu.idi.idatt.foodstorage;
 
+import edu.ntnu.idi.idatt.utils.InputValidation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,9 +26,7 @@ public class Cookbook {
    * @throws IllegalArgumentException if recipe is null or already exists
    */
   public void addRecipe(Recipe recipe) {
-    if (recipe == null) {
-      throw new IllegalArgumentException("Recipe cannot be null.");
-    }
+    InputValidation.validateRecipe(recipe);
     if (getRecipeByName(recipe.getName()) != null) {
       throw new IllegalArgumentException("Recipe already exists in the cookbook.");
     }
@@ -62,11 +59,8 @@ public class Cookbook {
    * @param storage the FoodStorage to check against
    * @return a list of recipes that can be made
    */
-  public List<Recipe> suggestRecipes(foodStorage storage) {
-    if (storage == null) {
-      throw new IllegalArgumentException("FoodStorage cannot be null.");
-    }
-
+  public List<Recipe> suggestRecipes(FoodStorage storage) {
+    InputValidation.validateFoodStorage(storage);
     List<Recipe> suggestedRecipes = new ArrayList<>();
     for (Recipe recipe : recipes) {
       if (recipe.canMake(storage)) {

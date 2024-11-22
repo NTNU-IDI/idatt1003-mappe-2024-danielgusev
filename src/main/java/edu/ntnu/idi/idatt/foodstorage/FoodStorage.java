@@ -1,15 +1,16 @@
 package edu.ntnu.idi.idatt.foodstorage;
 
+import edu.ntnu.idi.idatt.utils.InputValidation;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The foodStorage class manages a collection of Ingredient instances using a HashMap. It allows
- * adding, removing, searching and listing ingredients efficiently
+ * The FoodStorage class manages a collection of Ingredient instances using a HashMap. It allows
+ * adding, removing, searching, and listing ingredients efficiently.
  */
-public class foodStorage {
+public class FoodStorage {
 
   /**
    * Map of ingredient keys to Ingredient instances.
@@ -24,7 +25,7 @@ public class foodStorage {
   /**
    * Constructs an empty FoodStorage.
    */
-  public foodStorage() {
+  public FoodStorage() {
     this.ingredientMap = new HashMap<>();
   }
 
@@ -69,9 +70,7 @@ public class foodStorage {
    * @throws IllegalArgumentException if ingredient is null
    */
   public void addIngredient(Ingredient ingredient) {
-    if (ingredient == null) {
-      throw new IllegalArgumentException("Ingredient cannot be null.");
-    }
+    InputValidation.validateIngredient(ingredient);
 
     String key = generateKey(ingredient);
 
@@ -95,22 +94,14 @@ public class foodStorage {
    * @param bestBeforeDate the best-before date
    * @param quantity       the quantity to remove
    * @throws IllegalArgumentException if quantity is negative, ingredient not found, or insufficient
-   *                                  quantity.
+   *                                  quantity
    */
   public void removeIngredient(String name, String unit, double pricePerUnit,
       Date bestBeforeDate, double quantity) {
-    if (quantity < 0) {
-      throw new IllegalArgumentException("Quantity to remove cannot be negative.");
-    }
-    if (name == null || name.trim().isEmpty()) {
-      throw new IllegalArgumentException("Ingredient name cannot be null or empty.");
-    }
-    if (unit == null || unit.trim().isEmpty()) {
-      throw new IllegalArgumentException("Unit cannot be null or empty.");
-    }
-    if (bestBeforeDate == null) {
-      throw new IllegalArgumentException("Best-before date cannot be null.");
-    }
+    InputValidation.validateRemoveIngredientQuantity(quantity);
+    InputValidation.validateIngredientName(name);
+    InputValidation.validateIngredientUnit(unit);
+    InputValidation.validateBestBeforeDate(bestBeforeDate);
 
     String key = generateKey(name, unit, pricePerUnit, bestBeforeDate);
 
@@ -158,7 +149,7 @@ public class foodStorage {
   }
 
   /**
-   * This is mainly for the recipe class since the Ingredients only have name and unit.
+   * This is mainly for the Recipe class since the ingredients only have name and unit.
    *
    * @param name name of the ingredient in the recipe
    * @param unit unit of the ingredient in the recipe
@@ -174,8 +165,7 @@ public class foodStorage {
 
     for (Ingredient ingredient : ingredientMap.values()) {
       if (ingredient.getName().trim().toLowerCase().equals(trimmedName)
-          &&
-          ingredient.getUnit().trim().toLowerCase().equals(trimmedUnit)) {
+          && ingredient.getUnit().trim().toLowerCase().equals(trimmedUnit)) {
         return ingredient;
       }
     }
@@ -225,6 +215,3 @@ public class foodStorage {
         .sum();
   }
 }
-
-
-

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import edu.ntnu.idi.idatt.foodstorage.Ingredient;
 import java.text.SimpleDateFormat;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.util.Date;
 
@@ -12,7 +13,8 @@ public class IngredientTest {
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 
   @Test
-  public void testValidIngredientCreation() throws Exception {
+  @DisplayName("Testing if ingredients are created correctly")
+  public void IngredientTest1() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024"); // Within range, not excluded dates
     Ingredient ingredient = new Ingredient("Milk", 1.75, "liter", bestBeforeDate, 33.60);
 
@@ -24,10 +26,11 @@ public class IngredientTest {
   }
 
   @Test
-  public void testIngredientCreationWithNullName() throws Exception {
+  @DisplayName("Testing ingredient creation with null name")
+  public void IngredientTest2() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       new Ingredient(null, 1.75, "liter", bestBeforeDate, 33.60);
     });
     assertEquals("Ingredient name cannot be null or empty", exception.getMessage());
@@ -37,7 +40,7 @@ public class IngredientTest {
   public void testIngredientCreationWithEmptyName() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       new Ingredient("   ", 1.75, "liter", bestBeforeDate, 33.60);
     });
     assertEquals("Ingredient name cannot be null or empty", exception.getMessage());
@@ -47,7 +50,7 @@ public class IngredientTest {
   public void testIngredientCreationWithNegativeQuantity() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       new Ingredient("Milk", -1.0, "liter", bestBeforeDate, 33.60);
     });
     assertEquals("Ingredient quantity cannot be negative", exception.getMessage());
@@ -57,7 +60,7 @@ public class IngredientTest {
   public void testIngredientCreationWithNullUnit() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       new Ingredient("Milk", 1.75, null, bestBeforeDate, 33.60);
     });
     assertEquals("Ingredient unit cannot be null or empty", exception.getMessage());
@@ -67,7 +70,7 @@ public class IngredientTest {
   public void testIngredientCreationWithEmptyUnit() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       new Ingredient("Milk", 1.75, "   ", bestBeforeDate, 33.60);
     });
     assertEquals("Ingredient unit cannot be null or empty", exception.getMessage());
@@ -77,7 +80,7 @@ public class IngredientTest {
   public void testIngredientCreationWithNegativePricePerUnit() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       new Ingredient("Milk", 1.75, "liter", bestBeforeDate, -5.0);
     });
     assertEquals("Ingredient price per unit cannot be negative", exception.getMessage());
@@ -96,7 +99,7 @@ public class IngredientTest {
     Date bestBeforeDate = DATE_FORMAT.parse("15.12.2024");
     Ingredient ingredient = new Ingredient("Butter", 250.0, "g", bestBeforeDate, 37.70);
 
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       ingredient.setQuantity(-100.0);
     });
     assertEquals("Ingredient quantity cannot be negative", exception.getMessage());
