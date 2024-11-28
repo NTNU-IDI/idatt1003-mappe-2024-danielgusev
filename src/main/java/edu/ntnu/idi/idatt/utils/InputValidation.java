@@ -11,6 +11,11 @@ import java.util.Map;
  */
 public class InputValidation {
 
+  /**
+   * Handles exception when name is null or empty.
+   *
+   * @param name of the recipe
+   */
   public static void validateRecipeName(String name) {
     if (name == null || name.trim().isEmpty()) {
       throw new IllegalArgumentException("Recipe name cannot be null or empty.");
