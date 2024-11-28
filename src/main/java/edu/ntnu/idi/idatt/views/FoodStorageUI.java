@@ -1,21 +1,25 @@
 package edu.ntnu.idi.idatt.views;
 
 import edu.ntnu.idi.idatt.foodstorage.Cookbook;
-import edu.ntnu.idi.idatt.foodstorage.Ingredient;
 import edu.ntnu.idi.idatt.foodstorage.FoodStorage;
+import edu.ntnu.idi.idatt.foodstorage.Ingredient;
+import edu.ntnu.idi.idatt.foodstorage.Recipe;
 import edu.ntnu.idi.idatt.utils.UnitConverter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Represents the user interface for the FoodStorage application.
  */
 
-public class foodStorageUI {
+public class FoodStorageUI {
 
   private FoodStorage storage;
   private Cookbook cookbook;
@@ -41,6 +45,8 @@ public class foodStorageUI {
   public void start() {
     boolean exit = false;
     while (!exit) {
+      printMenu();
+      System.out.print("Enter your choice: ");
       int choice = scanner.nextInt();
       switch (choice) {
         case 1:
@@ -62,13 +68,13 @@ public class foodStorageUI {
           calculateTotalValue();
           break;
         case 7:
-          calculateTotalExpiredValue();
+          calculateExpiredValue();
           break;
         case 8:
           addRecipe();
           break;
         case 9:
-          suggestRecipe();
+          suggestRecipes();
           break;
         case 10:
           exit = true;
@@ -79,6 +85,23 @@ public class foodStorageUI {
       }
     }
     scanner.close();
+  }
+
+  private void printMenu() {
+    System.out.println("""
+        
+        FoodStorage Application Menu:
+        1. Add Ingredient
+        2. Remove Ingredient
+        3. Search Ingredient
+        4. List All Ingredients
+        5. List Expired Ingredients
+        6. Calculate Total Value
+        7. Calculate Total Expired Value
+        8. Add Recipe
+        9. Suggest Recipes
+        10. Exit
+        """);
   }
 
 
@@ -118,7 +141,8 @@ public class foodStorageUI {
   private void removeIngredient() {
     try {
       System.out.println("Enter ingredient name: ");
-      String name = scanner.next();
+
+      final String name = scanner.next();
 
       System.out.println("Enter unit: ");
       String unit = scanner.next();
@@ -136,7 +160,6 @@ public class foodStorageUI {
 
       double standardQuantity = UnitConverter.convertToStandardUnits(quantity, standardUnit);
 
-      //Ingredient ingredient = new Ingredient(name, standardQuantity, standardUnit, bestBeforeDate, pricePerUnit);
       storage.removeIngredient(name, standardUnit, standardQuantity, bestBeforeDate, pricePerUnit);
       System.out.println("Ingredient successfully added!");
     } catch (ParseException e) {
@@ -205,7 +228,64 @@ public class foodStorageUI {
     System.out.printf("\"Total value of all ingredients: %.2f%n\"", totalValue);
   }
 
-  private void calculateValue() {
+  private void calculateExpiredValue() {
+    double expiredValue = storage.calculateExpiredIngredientsValue();
+    System.out.printf("\"Value of all expired ingredients: %.2f%n\"", expiredValue);
+  }
+
+  private void addRecipe() {
+    try {
+      System.out.println("Enter recipe name: ");
+      final String name = scanner.nextLine();
+
+      System.out.println("Enter description: ");
+      final String description = scanner.nextLine();
+
+      System.out.println("Enter instructions: ");
+      final String instructions = scanner.nextLine();
+
+      Map<String, Double> ingredients = new HashMap<>();
+      Map<String, String> units = new HashMap<>();
+
+      System.out.println("Enter number of ingredients: ");
+      int numIngredients = scanner.nextInt();
+      scanner.nextLine();
+
+      IntStream.range(0, numIngredients).forEach(i -> {
+        System.out.printf("Ingredient %d name: ", i + 1);
+        String ingredientName = scanner.nextLine();
+
+        System.out.printf("Ingredient %d quantity: ", i + 1);
+        double quantity = getDoubleInput();
+
+        System.out.printf("Ingredient %d unit: ", i + 1);
+        String unit = scanner.nextLine();
+
+        // Convert to standard units
+        double standardQuantity = UnitConverter.convertToStandardUnits(quantity, unit);
+        String standardUnit = UnitConverter.getStandardUnit(unit);
+
+        ingredients.put(ingredientName, standardQuantity);
+        units.put(ingredientName, standardUnit);
+      });
+
+      Recipe recipe = new Recipe(name, description, instructions, ingredients, units);
+      cookbook.addRecipe(recipe);
+      System.out.println("Recipe successfully added!");
+    } catch (IllegalArgumentException e) {
+      System.out.println("Error adding ingredient: " + e.getMessage());
+    }
+  }
+
+  private void suggestRecipes() {
+    List<Recipe> suggestedRecipes = cookbook.suggestRecipes(storage);
+    if (suggestedRecipes.isEmpty()) {
+      System.out.println("No recipes can be made with current ingredients.");
+    } else {
+      System.out.println("Recipes you can make:");
+      suggestedRecipes.forEach(recipe -> System.out.println(recipe.getName()));
+    }
+
   }
 
 

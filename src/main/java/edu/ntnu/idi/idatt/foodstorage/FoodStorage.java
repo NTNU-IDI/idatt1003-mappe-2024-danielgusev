@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.foodstorage;
 
 import edu.ntnu.idi.idatt.utils.InputValidation;
+import edu.ntnu.idi.idatt.utils.UnitConverter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -161,16 +162,17 @@ public class FoodStorage {
     }
 
     String trimmedName = name.trim().toLowerCase();
-    String trimmedUnit = unit.trim().toLowerCase();
+    String standardUnit = UnitConverter.getStandardUnit(unit);
 
     for (Ingredient ingredient : ingredientMap.values()) {
       if (ingredient.getName().trim().toLowerCase().equals(trimmedName)
-          && ingredient.getUnit().trim().toLowerCase().equals(trimmedUnit)) {
+          && ingredient.getUnit().equalsIgnoreCase(standardUnit)) {
         return ingredient;
       }
     }
     return null;
   }
+
 
   /**
    * Returns a list of all ingredients in the storage.

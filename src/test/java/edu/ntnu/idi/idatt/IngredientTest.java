@@ -33,7 +33,7 @@ public class IngredientTest {
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       new Ingredient(null, 1.75, "liter", bestBeforeDate, 33.60);
     });
-    assertEquals("Ingredient name cannot be null or empty", exception.getMessage());
+    assertEquals("Ingredient name cannot be null or empty.", exception.getMessage());
   }
 
   @Test
@@ -43,7 +43,7 @@ public class IngredientTest {
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       new Ingredient("   ", 1.75, "liter", bestBeforeDate, 33.60);
     });
-    assertEquals("Ingredient name cannot be null or empty", exception.getMessage());
+    assertEquals("Ingredient name cannot be null or empty.", exception.getMessage());
   }
 
   @Test
@@ -53,7 +53,7 @@ public class IngredientTest {
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       new Ingredient("Milk", -1.0, "liter", bestBeforeDate, 33.60);
     });
-    assertEquals("Ingredient quantity cannot be negative", exception.getMessage());
+    assertEquals("Ingredient quantity cannot be negative.", exception.getMessage());
   }
 
   @Test
@@ -63,7 +63,7 @@ public class IngredientTest {
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       new Ingredient("Milk", 1.75, null, bestBeforeDate, 33.60);
     });
-    assertEquals("Ingredient unit cannot be null or empty", exception.getMessage());
+    assertEquals("Ingredient unit cannot be null or empty.", exception.getMessage());
   }
 
   @Test
@@ -73,7 +73,7 @@ public class IngredientTest {
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       new Ingredient("Milk", 1.75, "   ", bestBeforeDate, 33.60);
     });
-    assertEquals("Ingredient unit cannot be null or empty", exception.getMessage());
+    assertEquals("Ingredient unit cannot be null or empty.", exception.getMessage());
   }
 
   @Test
@@ -83,7 +83,7 @@ public class IngredientTest {
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       new Ingredient("Milk", 1.75, "liter", bestBeforeDate, -5.0);
     });
-    assertEquals("Ingredient price per unit cannot be negative", exception.getMessage());
+    assertEquals("Price per unit cannot be negative.", exception.getMessage());
   }
 
   @Test
@@ -102,7 +102,7 @@ public class IngredientTest {
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       ingredient.setQuantity(-100.0);
     });
-    assertEquals("Ingredient quantity cannot be negative", exception.getMessage());
+    assertEquals("Ingredient quantity cannot be negative.", exception.getMessage());
   }
 
   @Test
@@ -114,7 +114,7 @@ public class IngredientTest {
 
   @Test
   public void testIsExpiredWhenExpired() throws Exception {
-    Date pastDate = DATE_FORMAT.parse("10.11.2024"); // Before 01.12.2024
+    Date pastDate = DATE_FORMAT.parse("10.11.2024"); // Before current date
     Ingredient ingredient = new Ingredient("Eggs", 12.0, "pcs", pastDate, 40.70);
     assertTrue(ingredient.isExpired());
   }
@@ -131,8 +131,8 @@ public class IngredientTest {
   public void testToString() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("15.12.2024");
     Ingredient ingredient = new Ingredient("Milk", 1.75, "liter", bestBeforeDate, 33.60);
-    String expectedString =
-        "Milk:1.75 liter, Best before: " + bestBeforeDate + ", Price per unit" + 33.60;
+
+    String expectedString = "Milk: 1.75 liter, Best before: 15.12.2024, Price per unit: 33.6";
     assertEquals(expectedString, ingredient.toString());
   }
 }

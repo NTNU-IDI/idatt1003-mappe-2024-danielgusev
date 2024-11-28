@@ -108,4 +108,5 @@ public class Ingredient {
     return name + ": " + quantity + " " + unit + ", Best before: "
         + dateStr + ", Price per unit: " + pricePerUnit;
   }
+
 }

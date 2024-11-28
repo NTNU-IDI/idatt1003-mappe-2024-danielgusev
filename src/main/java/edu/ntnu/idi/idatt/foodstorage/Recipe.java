@@ -114,6 +114,7 @@ public class Recipe {
       Double requiredQuantity = ingredients.get(ingredientName);
       String requiredUnit = units.get(ingredientName);
 
+      // Quantities and units are already in standard units
       Ingredient ingredient = storage.findIngredientByNameAndUnit(ingredientName, requiredUnit);
 
       if (ingredient == null || ingredient.getQuantity() < requiredQuantity) {
