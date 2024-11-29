@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The UnitConverter class converts units that use a different measurement unit than liter and kilo
+ * The UnitConverter class converts units that use a different measurement unit than liter and
+ * kilo.
  */
 public class UnitConverter {
 

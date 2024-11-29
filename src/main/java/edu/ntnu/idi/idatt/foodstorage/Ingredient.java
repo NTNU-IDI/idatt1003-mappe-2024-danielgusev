@@ -105,8 +105,9 @@ public class Ingredient {
   @Override
   public String toString() {
     String dateStr = dateFormat.format(bestBeforeDate);
-    return name + ": " + quantity + " " + unit + ", Best before: "
-        + dateStr + ", Price per unit: " + pricePerUnit;
+    String formattedQuantity = String.format("%.2f", quantity);
+    return name + ": " + formattedQuantity + " " + unit + ", Best before: "
+        + dateStr + ", Price: " + pricePerUnit;
   }
 
 }

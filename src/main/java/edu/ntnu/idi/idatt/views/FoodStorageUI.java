@@ -108,20 +108,20 @@ public class FoodStorageUI {
   private void addIngredient() {
     try {
       System.out.println("Enter ingredient name: ");
-      String name = scanner.next();
+      String name = scanner.next().trim().toLowerCase();
+
+      System.out.println("Enter ingredient unit: ");
+      String unit = scanner.next().trim().toLowerCase();
 
       System.out.println("Enter ingredient quantity: ");
       double quantity = getDoubleInput();
-
-      System.out.println("Enter ingredient unit: ");
-      String unit = scanner.next();
 
       // Convert quantity to standard units
       double standardQuantity = UnitConverter.convertToStandardUnits(quantity, unit);
       String standardUnit = UnitConverter.getStandardUnit(unit);
 
       System.out.println("Enter best-before date: ");
-      Date bestBeforeDate = DATE_FORMAT.parse(scanner.nextLine());
+      Date bestBeforeDate = DATE_FORMAT.parse(scanner.next().trim().toLowerCase());
 
       System.out.println("Enter price per unit: ");
       double pricePerUnit = getDoubleInput();
@@ -142,10 +142,10 @@ public class FoodStorageUI {
     try {
       System.out.println("Enter ingredient name: ");
 
-      final String name = scanner.next();
+      final String name = scanner.next().trim().toLowerCase();
 
       System.out.println("Enter unit: ");
-      String unit = scanner.next();
+      String unit = scanner.next().trim().toLowerCase();
 
       String standardUnit = UnitConverter.getStandardUnit(unit);
 
@@ -153,19 +153,19 @@ public class FoodStorageUI {
       double pricePerUnit = getDoubleInput();
 
       System.out.println("Enter best-before date (dd.MM.yyyy): ");
-      Date bestBeforeDate = DATE_FORMAT.parse(scanner.nextLine());
+      Date bestBeforeDate = DATE_FORMAT.parse(scanner.next().trim());
 
       System.out.println("Enter quantity to remove: ");
       double quantity = getDoubleInput();
 
-      double standardQuantity = UnitConverter.convertToStandardUnits(quantity, standardUnit);
+      double standardQuantity = UnitConverter.convertToStandardUnits(quantity, unit);
 
-      storage.removeIngredient(name, standardUnit, standardQuantity, bestBeforeDate, pricePerUnit);
-      System.out.println("Ingredient successfully added!");
+      storage.removeIngredient(name, standardUnit, pricePerUnit, bestBeforeDate, standardQuantity);
+      System.out.println("Ingredient successfully removed!");
     } catch (ParseException e) {
       System.out.println("Invalid date format. Please enter date in dd.MM.yyyy format.");
     } catch (IllegalArgumentException e) {
-      System.out.println("Error adding ingredient: " + e.getMessage());
+      System.out.println("Error removing ingredient: " + e.getMessage());
     }
   }
 
