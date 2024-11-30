@@ -15,7 +15,7 @@ public class IngredientTest {
   @Test
   @DisplayName("Testing if ingredients are created correctly")
   public void IngredientTest1() throws Exception {
-    Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024"); // Within range, not excluded dates
+    Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
     Ingredient ingredient = new Ingredient("Milk", 1.75, "liter", bestBeforeDate, 33.60);
 
     assertEquals("Milk", ingredient.getName());
@@ -37,7 +37,8 @@ public class IngredientTest {
   }
 
   @Test
-  public void testIngredientCreationWithEmptyName() throws Exception {
+  @DisplayName("Testing ingredient creation with empty name")
+  public void IngredientTest3() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -47,7 +48,8 @@ public class IngredientTest {
   }
 
   @Test
-  public void testIngredientCreationWithNegativeQuantity() throws Exception {
+  @DisplayName("Testing ingredient creation with negative quantity")
+  public void IngredientTest4() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -57,7 +59,8 @@ public class IngredientTest {
   }
 
   @Test
-  public void testIngredientCreationWithNullUnit() throws Exception {
+  @DisplayName("Testing ingredient creation with null unit")
+  public void IngredientTest5() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -67,7 +70,8 @@ public class IngredientTest {
   }
 
   @Test
-  public void testIngredientCreationWithEmptyUnit() throws Exception {
+  @DisplayName("Testing ingredient creation with empty unit")
+  public void IngredientTest6() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -77,7 +81,8 @@ public class IngredientTest {
   }
 
   @Test
-  public void testIngredientCreationWithNegativePricePerUnit() throws Exception {
+  @DisplayName("Testing ingredient creation with negative price per unit")
+  public void IngredientTest7() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -87,15 +92,17 @@ public class IngredientTest {
   }
 
   @Test
-  public void testSetQuantityValid() throws Exception {
-    Date bestBeforeDate = DATE_FORMAT.parse("15.12.2024"); // Within range, not excluded dates
+  @DisplayName("Testing setting valid quantity")
+  public void IngredientTest8() throws Exception {
+    Date bestBeforeDate = DATE_FORMAT.parse("15.12.2024");
     Ingredient ingredient = new Ingredient("Butter", 250.0, "g", bestBeforeDate, 37.70);
     ingredient.setQuantity(500.0);
     assertEquals(500.0, ingredient.getQuantity(), 0.001);
   }
 
   @Test
-  public void testSetQuantityNegative() throws Exception {
+  @DisplayName("Testing setting negative quantity")
+  public void IngredientTest9() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("15.12.2024");
     Ingredient ingredient = new Ingredient("Butter", 250.0, "g", bestBeforeDate, 37.70);
 
@@ -106,21 +113,24 @@ public class IngredientTest {
   }
 
   @Test
-  public void testIsExpiredWhenNotExpired() throws Exception {
-    Date futureDate = DATE_FORMAT.parse("01.01.2025"); // Within range, future date
+  @DisplayName("Testing isExpired method when ingredient is not expired")
+  public void IngredientTest10() throws Exception {
+    Date futureDate = DATE_FORMAT.parse("01.01.2025");
     Ingredient ingredient = new Ingredient("Eggs", 12.0, "pcs", futureDate, 40.70);
     assertFalse(ingredient.isExpired());
   }
 
   @Test
-  public void testIsExpiredWhenExpired() throws Exception {
-    Date pastDate = DATE_FORMAT.parse("10.11.2024"); // Before current date
+  @DisplayName("Testing isExpired method when ingredient is expired")
+  public void IngredientTest11() throws Exception {
+    Date pastDate = DATE_FORMAT.parse("10.11.2020");
     Ingredient ingredient = new Ingredient("Eggs", 12.0, "pcs", pastDate, 40.70);
     assertTrue(ingredient.isExpired());
   }
 
   @Test
-  public void testGetTotalValue() throws Exception {
+  @DisplayName("Testing getTotalValue method")
+  public void IngredientTest12() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("15.12.2024");
     Ingredient ingredient = new Ingredient("Milk", 1.75, "liter", bestBeforeDate, 33.60);
     double expectedTotalValue = 1.75 * 33.60;
@@ -128,7 +138,8 @@ public class IngredientTest {
   }
 
   @Test
-  public void testToString() throws Exception {
+  @DisplayName("Testing toString method")
+  public void IngredientTest13() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("15.12.2024");
     Ingredient ingredient = new Ingredient("Milk", 1.75, "liter", bestBeforeDate, 33.60);
 

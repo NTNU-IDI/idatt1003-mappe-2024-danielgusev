@@ -8,6 +8,7 @@ import edu.ntnu.idi.idatt.utils.UnitConverter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,13 @@ public class FoodStorageUI {
     storage = new FoodStorage();
     cookbook = new Cookbook();
     scanner = new Scanner(System.in);
+
+    try {
+      preloadIngredients();
+      preloadRecipes();
+    } catch (ParseException e) {
+      System.out.println("Error preloading data: " + e.getMessage());
+    }
   }
 
 
@@ -205,9 +213,11 @@ public class FoodStorageUI {
       System.out.println("No ingredients in storage.");
     } else {
       Arrays.stream(ingredients)
-          .sorted()
-          .toList()
+          .sorted(Comparator
+              .comparing(Ingredient::getName, String.CASE_INSENSITIVE_ORDER)
+              .thenComparing(Ingredient::getBestBeforeDate))
           .forEach(this::printIngredient);
+
     }
   }
 
@@ -217,9 +227,11 @@ public class FoodStorageUI {
       System.out.println("No expired ingredients in storage");
     } else {
       Arrays.stream(expiredIngredients)
-          .sorted()
-          .toList()
+          .sorted(Comparator
+              .comparing(Ingredient::getName, String.CASE_INSENSITIVE_ORDER)
+              .thenComparing(Ingredient::getBestBeforeDate))
           .forEach(this::printIngredient);
+
     }
   }
 
@@ -236,7 +248,7 @@ public class FoodStorageUI {
   private void addRecipe() {
     try {
       System.out.println("Enter recipe name: ");
-      final String name = scanner.nextLine();
+      final String name = scanner.next().trim().toLowerCase();
 
       System.out.println("Enter description: ");
       final String description = scanner.nextLine();
@@ -249,17 +261,16 @@ public class FoodStorageUI {
 
       System.out.println("Enter number of ingredients: ");
       int numIngredients = scanner.nextInt();
-      scanner.nextLine();
 
       IntStream.range(0, numIngredients).forEach(i -> {
         System.out.printf("Ingredient %d name: ", i + 1);
-        String ingredientName = scanner.nextLine();
+        String ingredientName = scanner.next().trim().toLowerCase();
 
         System.out.printf("Ingredient %d quantity: ", i + 1);
         double quantity = getDoubleInput();
 
         System.out.printf("Ingredient %d unit: ", i + 1);
-        String unit = scanner.nextLine();
+        String unit = scanner.next().trim().toLowerCase();
 
         // Convert to standard units
         double standardQuantity = UnitConverter.convertToStandardUnits(quantity, unit);
@@ -312,6 +323,119 @@ public class FoodStorageUI {
 
   private void printIngredient(Ingredient ingredient) {
     System.out.println(ingredient.toString());
+  }
+
+  private void preloadIngredients() throws ParseException {
+    Date butterBestBefore = DATE_FORMAT.parse("15.12.2024");
+    Date milkBestBefore = DATE_FORMAT.parse("10.12.2024");
+    Date creamBestBefore = DATE_FORMAT.parse("05.12.2024");
+    Date potatoBestBefore = DATE_FORMAT.parse("20.01.2025");
+    Date saltBestBefore = DATE_FORMAT.parse("31.12.2026");
+    Date pepperBestBefore = DATE_FORMAT.parse("20.06.2025");
+
+    // Create ingredients with individual best-before dates
+    Ingredient butter = new Ingredient(
+        "Butter", 0.5, "kilogram", butterBestBefore, 50.0);
+    Ingredient milk = new Ingredient(
+        "Milk", 2.0, "liter", milkBestBefore, 20.0);
+    Ingredient cream = new Ingredient(
+        "Cream", 1.0, "liter", creamBestBefore, 25.0);
+    Ingredient potato = new Ingredient(
+        "Potato", 5.0, "kilogram", potatoBestBefore, 15.0);
+    Ingredient salt = new Ingredient(
+        "Salt", 0.5, "kilogram", saltBestBefore, 5.0);
+    Ingredient pepper = new Ingredient(
+        "Pepper", 0.2, "kilogram", pepperBestBefore, 10.0);
+
+    // Add ingredients to storage
+    storage.addIngredient(butter);
+    storage.addIngredient(milk);
+    storage.addIngredient(cream);
+    storage.addIngredient(potato);
+    storage.addIngredient(salt);
+    storage.addIngredient(pepper);
+
+    System.out.println("Preloaded ingredients into storage.");
+  }
+
+  private void preloadRecipes() {
+    // Recipe 1: Mashed Potatoes
+    Map<String, Double> mashedPotatoesIngredients = new HashMap<>();
+    Map<String, String> mashedPotatoesUnits = new HashMap<>();
+
+    mashedPotatoesIngredients.put("potato", 1.0);   // 1 kilogram
+    mashedPotatoesUnits.put("potato", "kilogram");
+
+    mashedPotatoesIngredients.put("milk", 0.2);     // 0.2 liters
+    mashedPotatoesUnits.put("milk", "liter");
+
+    mashedPotatoesIngredients.put("butter", 0.05);  // 0.05 kilograms
+    mashedPotatoesUnits.put("butter", "kilogram");
+
+    mashedPotatoesIngredients.put("salt", 0.005);   // 0.005 kilograms
+    mashedPotatoesUnits.put("salt", "kilogram");
+
+    mashedPotatoesIngredients.put("pepper", 0.002); // 0.002 kilograms
+    mashedPotatoesUnits.put("pepper", "kilogram");
+
+    String mashedPotatoesDescription = "Creamy mashed potatoes.";
+    String mashedPotatoesInstructions =
+        """
+            1. Peel and cut the potatoes into chunks.
+            2. Boil potatoes until tender.
+            3. Drain and mash the potatoes.
+            4. Stir in milk and butter.
+            5. Season with salt and pepper.""";
+
+    Recipe mashedPotatoes = new Recipe(
+        "Mashed Potatoes",
+        mashedPotatoesDescription,
+        mashedPotatoesInstructions,
+        mashedPotatoesIngredients,
+        mashedPotatoesUnits
+    );
+
+    cookbook.addRecipe(mashedPotatoes);
+
+    // Recipe 2: Creamy Potato Soup
+    Map<String, Double> potatoSoupIngredients = new HashMap<>();
+    Map<String, String> potatoSoupUnits = new HashMap<>();
+
+    potatoSoupIngredients.put("potato", 0.5);       // 0.5 kilograms
+    potatoSoupUnits.put("potato", "kilogram");
+
+    potatoSoupIngredients.put("cream", 0.3);        // 0.3 liters
+    potatoSoupUnits.put("cream", "liter");
+
+    potatoSoupIngredients.put("butter", 0.02);      // 0.02 kilograms
+    potatoSoupUnits.put("butter", "kilogram");
+
+    potatoSoupIngredients.put("salt", 0.005);       // 0.005 kilograms
+    potatoSoupUnits.put("salt", "kilogram");
+
+    potatoSoupIngredients.put("pepper", 0.002);     // 0.002 kilograms
+    potatoSoupUnits.put("pepper", "kilogram");
+
+    String potatoSoupDescription = "Delicious creamy potato soup.";
+    String potatoSoupInstructions =
+        """
+            1. Chop potatoes into small pieces.
+            2. Cook potatoes in water until soft.
+            3. Add cream and butter.
+            4. Blend until smooth.
+            5. Season with salt and pepper.""";
+
+    Recipe potatoSoup = new Recipe(
+        "Creamy Potato Soup",
+        potatoSoupDescription,
+        potatoSoupInstructions,
+        potatoSoupIngredients,
+        potatoSoupUnits
+    );
+
+    cookbook.addRecipe(potatoSoup);
+
+    System.out.println("Preloaded recipes into cookbook.");
   }
 }
 
