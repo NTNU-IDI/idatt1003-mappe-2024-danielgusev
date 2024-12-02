@@ -7,6 +7,7 @@ import edu.ntnu.idi.idatt.foodstorage.Recipe;
 import edu.ntnu.idi.idatt.utils.UnitConverter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -118,7 +119,7 @@ public class FoodStorageUI {
       System.out.println("Enter ingredient name: ");
       String name = scanner.next().trim().toLowerCase();
 
-      System.out.println("Enter ingredient unit: ");
+      System.out.println("Enter ingredient unit of measurement: ");
       String unit = scanner.next().trim().toLowerCase();
 
       System.out.println("Enter ingredient quantity: ");
@@ -131,7 +132,7 @@ public class FoodStorageUI {
       System.out.println("Enter best-before date: ");
       Date bestBeforeDate = DATE_FORMAT.parse(scanner.next().trim().toLowerCase());
 
-      System.out.println("Enter price per unit: ");
+      System.out.println("Enter price: ");
       double pricePerUnit = getDoubleInput();
 
       Ingredient ingredient = new Ingredient(name, standardQuantity, standardUnit, bestBeforeDate,
@@ -152,12 +153,12 @@ public class FoodStorageUI {
 
       final String name = scanner.next().trim().toLowerCase();
 
-      System.out.println("Enter unit: ");
+      System.out.println("Enter unit of measurement: ");
       String unit = scanner.next().trim().toLowerCase();
 
       String standardUnit = UnitConverter.getStandardUnit(unit);
 
-      System.out.println("Enter price per unit: ");
+      System.out.println("Enter price: ");
       double pricePerUnit = getDoubleInput();
 
       System.out.println("Enter best-before date (dd.MM.yyyy): ");
@@ -179,31 +180,19 @@ public class FoodStorageUI {
 
 
   private void searchIngredient() {
+    System.out.println("Enter ingredient name: ");
+    String name = scanner.next();
 
-    try {
-      System.out.println("Enter ingredient name: ");
-      String name = scanner.next();
+    System.out.println("Enter unit of measurement: ");
+    String unit = scanner.next();
 
-      System.out.println("Enter unit: ");
-      String unit = scanner.next();
+    String standardUnit = UnitConverter.getStandardUnit(unit);
 
-      String standardUnit = UnitConverter.getStandardUnit(unit);
-
-      System.out.println("Enter price per unit: ");
-      double pricePerUnit = getDoubleInput();
-
-      System.out.println("Enter best-before date (dd.MM.yyyy): ");
-      Date bestBeforeDate = DATE_FORMAT.parse(scanner.nextLine());
-
-      Ingredient ingredient = storage.searchIngredient(name, standardUnit, pricePerUnit,
-          bestBeforeDate);
-      if (ingredient != null) {
-        printIngredient(ingredient);
-      } else {
-        System.out.println("Ingredient not found");
-      }
-    } catch (ParseException e) {
-      System.out.println("Invalid date format. Please enter date in dd.MM.yyyy format.");
+    Ingredient ingredient = storage.findIngredientWithExpired(name, standardUnit);
+    if (ingredient != null) {
+      printIngredient(ingredient);
+    } else {
+      System.out.println("Ingredient not found");
     }
   }
 
@@ -267,11 +256,11 @@ public class FoodStorageUI {
         System.out.printf("Ingredient %d name: ", i + 1);
         String ingredientName = scanner.next().trim().toLowerCase();
 
+        System.out.printf("Ingredient %d unit of measurement: ", i + 1);
+        String unit = scanner.next().trim().toLowerCase();
+
         System.out.printf("Ingredient %d quantity: ", i + 1);
         double quantity = getDoubleInput();
-
-        System.out.printf("Ingredient %d unit: ", i + 1);
-        String unit = scanner.next().trim().toLowerCase();
 
         // Convert to standard units
         double standardQuantity = UnitConverter.convertToStandardUnits(quantity, unit);
@@ -285,19 +274,51 @@ public class FoodStorageUI {
       cookbook.addRecipe(recipe);
       System.out.println("Recipe successfully added!");
     } catch (IllegalArgumentException e) {
-      System.out.println("Error adding ingredient: " + e.getMessage());
+      System.out.println("Error adding recipe: " + e.getMessage());
     }
   }
 
   private void suggestRecipes() {
-    List<Recipe> suggestedRecipes = cookbook.suggestRecipes(storage);
-    if (suggestedRecipes.isEmpty()) {
+    List<Recipe> allRecipes = cookbook.getAllRecipes();
+    List<Recipe> canMakeRecipes = new ArrayList<>();
+    Map<Recipe, Map<String, Double>> missingIngredientsMap = new HashMap<>();
+
+    for (Recipe recipe : allRecipes) {
+      if (recipe.canMake(storage)) {
+        canMakeRecipes.add(recipe);
+      } else {
+        Map<String, Double> missingIngredients = recipe.getMissingIngredients(storage);
+        missingIngredientsMap.put(recipe, missingIngredients);
+      }
+    }
+
+    if (canMakeRecipes.isEmpty()) {
       System.out.println("No recipes can be made with current ingredients.");
     } else {
       System.out.println("Recipes you can make:");
-      suggestedRecipes.forEach(recipe -> System.out.println(recipe.getName()));
+      canMakeRecipes.forEach(recipe -> System.out.println("- "
+          + recipe.getName() + "\n"
+          + recipe.getDescription() + "\n"
+          + recipe.getIngredients() + "\n"
+          + "How to make "
+          + recipe.getName() + ":\n"
+          + recipe.getInstructions()));
     }
 
+    if (!missingIngredientsMap.isEmpty()) {
+      System.out.println("\nRecipes you cannot make and their missing ingredients:");
+      for (Map.Entry<Recipe, Map<String, Double>> entry : missingIngredientsMap.entrySet()) {
+        Recipe recipe = entry.getKey();
+        Map<String, Double> missingIngredients = entry.getValue();
+        System.out.println("- " + recipe.getName() + ":");
+        for (Map.Entry<String, Double> ingredientEntry : missingIngredients.entrySet()) {
+          String ingredientName = ingredientEntry.getKey();
+          Double quantity = ingredientEntry.getValue();
+          String unit = recipe.getUnits().get(ingredientName);
+          System.out.printf("  Missing %s: %.2f %s\n", ingredientName, quantity, unit);
+        }
+      }
+    }
   }
 
 
@@ -362,6 +383,7 @@ public class FoodStorageUI {
     storage.addIngredient(salt);
     storage.addIngredient(pepper);
     storage.addIngredient(mayonnaise);
+    storage.addIngredient(beef);
 
     System.out.println("Preloaded ingredients into storage.");
   }

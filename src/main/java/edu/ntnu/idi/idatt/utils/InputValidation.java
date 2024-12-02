@@ -101,7 +101,7 @@ public class InputValidation {
 
   public static void validatePricePerUnit(double pricePerUnit) {
     if (pricePerUnit < 0) {
-      throw new IllegalArgumentException("Price per unit cannot be negative.");
+      throw new IllegalArgumentException("Price cannot be negative.");
     }
   }
 

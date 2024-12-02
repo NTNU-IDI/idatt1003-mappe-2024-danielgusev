@@ -151,13 +151,38 @@ public class FoodStorage {
   }
 
   /**
-   * This is mainly for the Recipe class since the ingredients only have name and unit.
+   * This is for finding the ingredient without using some parameters.
    *
    * @param name name of the ingredient in the recipe
    * @param unit unit of the ingredient in the recipe
    * @return returns the desired ingredient
    */
   public Ingredient findIngredientByNameAndUnit(String name, String unit) {
+    if (name == null || unit == null) {
+      return null;
+    }
+
+    String trimmedName = name.trim().toLowerCase();
+    String standardUnit = UnitConverter.getStandardUnit(unit);
+
+    for (Ingredient ingredient : ingredientMap.values()) {
+      if (ingredient.getName().trim().toLowerCase().equals(trimmedName)
+          && ingredient.getUnit().equalsIgnoreCase(standardUnit) && !ingredient.isExpired()) {
+        return ingredient;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * This is mainly for the search ability in the user menu.
+   *
+   * @param name name of the ingredient in the recipe
+   * @param unit unit of the ingredient in the recipe
+   * @return returns the desired ingredient
+   */
+
+  public Ingredient findIngredientWithExpired(String name, String unit) {
     if (name == null || unit == null) {
       return null;
     }
