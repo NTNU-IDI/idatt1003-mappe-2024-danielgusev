@@ -222,7 +222,7 @@ public class FoodStorageUI {
   }
 
   private void listAllExpiredIngredients() {
-    Ingredient[] expiredIngredients = storage.listAllIngredients();
+    Ingredient[] expiredIngredients = storage.listExpiredIngredients();
     if (expiredIngredients.length == 0) {
       System.out.println("No expired ingredients in storage");
     } else {
@@ -249,6 +249,7 @@ public class FoodStorageUI {
     try {
       System.out.println("Enter recipe name: ");
       final String name = scanner.next().trim().toLowerCase();
+      scanner.nextLine(); //consume the next newline.
 
       System.out.println("Enter description: ");
       final String description = scanner.nextLine();
@@ -332,20 +333,26 @@ public class FoodStorageUI {
     Date potatoBestBefore = DATE_FORMAT.parse("20.01.2025");
     Date saltBestBefore = DATE_FORMAT.parse("31.12.2026");
     Date pepperBestBefore = DATE_FORMAT.parse("20.06.2025");
+    Date mayoBestBefore = DATE_FORMAT.parse("20.11.2024");
+    Date beefBestBefore = DATE_FORMAT.parse("27.12.2024");
 
     // Create ingredients with individual best-before dates
     Ingredient butter = new Ingredient(
-        "Butter", 0.5, "kilogram", butterBestBefore, 50.0);
+        "Butter", 0.5, "kilogram", butterBestBefore, 35.0);
     Ingredient milk = new Ingredient(
-        "Milk", 2.0, "liter", milkBestBefore, 20.0);
+        "Milk", 1.75, "liter", milkBestBefore, 28.0);
     Ingredient cream = new Ingredient(
-        "Cream", 1.0, "liter", creamBestBefore, 25.0);
+        "Cream", 0.5, "liter", creamBestBefore, 25.0);
     Ingredient potato = new Ingredient(
-        "Potato", 5.0, "kilogram", potatoBestBefore, 15.0);
+        "Potato", 5.0, "kilogram", potatoBestBefore, 70.0);
     Ingredient salt = new Ingredient(
-        "Salt", 0.5, "kilogram", saltBestBefore, 5.0);
+        "Salt", 0.5, "kilogram", saltBestBefore, 15.0);
     Ingredient pepper = new Ingredient(
-        "Pepper", 0.2, "kilogram", pepperBestBefore, 10.0);
+        "Pepper", 0.1, "kilogram", pepperBestBefore, 15.0);
+    Ingredient mayonnaise = new Ingredient(
+        "Mayonnaise", 0.5, "liter", mayoBestBefore, 30.0);
+    Ingredient beef = new Ingredient(
+        "Beef", 0.5, "kilogram", beefBestBefore, 30.0);
 
     // Add ingredients to storage
     storage.addIngredient(butter);
@@ -354,6 +361,7 @@ public class FoodStorageUI {
     storage.addIngredient(potato);
     storage.addIngredient(salt);
     storage.addIngredient(pepper);
+    storage.addIngredient(mayonnaise);
 
     System.out.println("Preloaded ingredients into storage.");
   }
@@ -397,18 +405,18 @@ public class FoodStorageUI {
 
     cookbook.addRecipe(mashedPotatoes);
 
-    // Recipe 2: Creamy Potato Soup
+    // Recipe 2: Potato Soup
     Map<String, Double> potatoSoupIngredients = new HashMap<>();
     Map<String, String> potatoSoupUnits = new HashMap<>();
 
     potatoSoupIngredients.put("potato", 0.5);       // 0.5 kilograms
     potatoSoupUnits.put("potato", "kilogram");
 
-    potatoSoupIngredients.put("cream", 0.3);        // 0.3 liters
-    potatoSoupUnits.put("cream", "liter");
+    potatoSoupIngredients.put("beef", 0.5);        // 0.5 kilograms
+    potatoSoupUnits.put("beef", "kilogram");
 
-    potatoSoupIngredients.put("butter", 0.02);      // 0.02 kilograms
-    potatoSoupUnits.put("butter", "kilogram");
+    potatoSoupIngredients.put("mayonnaise", 0.2);      // 0.02 kilograms
+    potatoSoupUnits.put("mayonnaise", "liter");
 
     potatoSoupIngredients.put("salt", 0.005);       // 0.005 kilograms
     potatoSoupUnits.put("salt", "kilogram");
@@ -416,17 +424,18 @@ public class FoodStorageUI {
     potatoSoupIngredients.put("pepper", 0.002);     // 0.002 kilograms
     potatoSoupUnits.put("pepper", "kilogram");
 
-    String potatoSoupDescription = "Delicious creamy potato soup.";
+    String potatoSoupDescription = "Delicious potato soup with beef.";
     String potatoSoupInstructions =
         """
             1. Chop potatoes into small pieces.
-            2. Cook potatoes in water until soft.
-            3. Add cream and butter.
+            2. Chop the beef into small pieces, just as big as the potatoes.
+            2. Cook potatoes and beef in water until soft.
+            3. Add mayonnaise.
             4. Blend until smooth.
             5. Season with salt and pepper.""";
 
     Recipe potatoSoup = new Recipe(
-        "Creamy Potato Soup",
+        "Potato Soup",
         potatoSoupDescription,
         potatoSoupInstructions,
         potatoSoupIngredients,
