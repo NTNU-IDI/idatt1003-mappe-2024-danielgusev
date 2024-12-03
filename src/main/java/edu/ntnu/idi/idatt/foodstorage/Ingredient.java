@@ -12,9 +12,9 @@ public class Ingredient {
 
   private String name;
   private double quantity;
-  private String unit;
-  private Date bestBeforeDate;
-  private double pricePerUnit;
+  private final String unit;
+  private final Date bestBeforeDate;
+  private final double pricePerUnit;
 
   /**
    * Date formatter for parsing and formatting dates.
@@ -50,11 +50,6 @@ public class Ingredient {
 
   public String getName() {
     return name;
-  }
-
-  public void setName(String name) {
-    InputValidation.validateIngredientName(name);
-    this.name = name.trim();
   }
 
   public double getQuantity() {

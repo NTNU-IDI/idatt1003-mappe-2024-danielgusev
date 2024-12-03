@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -56,41 +57,54 @@ public class FoodStorageUI {
     while (!exit) {
       printMenu();
       System.out.print("Enter your choice: ");
-      int choice = scanner.nextInt();
-      switch (choice) {
-        case 1:
-          addIngredient();
-          break;
-        case 2:
-          removeIngredient();
-          break;
-        case 3:
-          searchIngredient();
-          break;
-        case 4:
-          listAllIngredients();
-          break;
-        case 5:
-          listAllExpiredIngredients();
-          break;
-        case 6:
-          calculateTotalValue();
-          break;
-        case 7:
-          calculateExpiredValue();
-          break;
-        case 8:
-          addRecipe();
-          break;
-        case 9:
-          suggestRecipes();
-          break;
-        case 10:
-          exit = true;
-          System.out.println("Exiting the program goodbye!");
-          break;
-        default:
-          System.out.println("Invalid choice. Try again.");
+      try {
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        if (choice < 1 || choice > 10) {
+          System.out.println("Invalid choice. Please enter a number between 1 and 10.");
+          continue; // Prompt the user again
+        }
+
+        switch (choice) {
+          case 1:
+            addIngredient();
+            break;
+          case 2:
+            removeIngredient();
+            break;
+          case 3:
+            searchIngredient();
+            break;
+          case 4:
+            listAllIngredients();
+            break;
+          case 5:
+            listAllExpiredIngredients();
+            break;
+          case 6:
+            calculateTotalValue();
+            break;
+          case 7:
+            calculateExpiredValue();
+            break;
+          case 8:
+            addRecipe();
+            break;
+          case 9:
+            suggestRecipes();
+            break;
+          case 10:
+            exit = true;
+            System.out.println("Exiting the program. Goodbye!");
+            break;
+          default:
+            // This default case is optional since we've already checked the range
+            System.out.println("Invalid choice. Try again.");
+        }
+      } catch (InputMismatchException e) {
+        System.out.println("Invalid input. Please enter a valid number between 1 and 10.");
+        scanner.nextLine(); // Consume the invalid input to avoid an infinite loop
       }
     }
     scanner.close();
@@ -129,7 +143,7 @@ public class FoodStorageUI {
       double standardQuantity = UnitConverter.convertToStandardUnits(quantity, unit);
       String standardUnit = UnitConverter.getStandardUnit(unit);
 
-      System.out.println("Enter best-before date: ");
+      System.out.println("Enter best-before date (dd.MM.yyyy):");
       Date bestBeforeDate = DATE_FORMAT.parse(scanner.next().trim().toLowerCase());
 
       System.out.println("Enter price: ");
@@ -183,7 +197,7 @@ public class FoodStorageUI {
     System.out.println("Enter ingredient name: ");
     String name = scanner.next();
 
-    System.out.println("Enter unit of measurement: ");
+    System.out.println("Enter unit of measurement (weight or volume): ");
     String unit = scanner.next();
 
     String standardUnit = UnitConverter.getStandardUnit(unit);
@@ -256,7 +270,7 @@ public class FoodStorageUI {
         System.out.printf("Ingredient %d name: ", i + 1);
         String ingredientName = scanner.next().trim().toLowerCase();
 
-        System.out.printf("Ingredient %d unit of measurement: ", i + 1);
+        System.out.printf("Ingredient %d unit of measurement(weight or volume): ", i + 1);
         String unit = scanner.next().trim().toLowerCase();
 
         System.out.printf("Ingredient %d quantity: ", i + 1);
@@ -279,32 +293,48 @@ public class FoodStorageUI {
   }
 
   private void suggestRecipes() {
+    // Get recipes that can be made using the cookbook's method
+    List<Recipe> canMakeRecipes = cookbook.suggestRecipes(storage);
+
+    // Get all recipes from the cookbook
     List<Recipe> allRecipes = cookbook.getAllRecipes();
-    List<Recipe> canMakeRecipes = new ArrayList<>();
+
+    // Determine recipes that cannot be made
+    List<Recipe> cannotMakeRecipes = new ArrayList<>(allRecipes);
+    cannotMakeRecipes.removeAll(canMakeRecipes);
+
+    // Map to hold missing ingredients for recipes that cannot be made
     Map<Recipe, Map<String, Double>> missingIngredientsMap = new HashMap<>();
 
-    for (Recipe recipe : allRecipes) {
-      if (recipe.canMake(storage)) {
-        canMakeRecipes.add(recipe);
-      } else {
-        Map<String, Double> missingIngredients = recipe.getMissingIngredients(storage);
-        missingIngredientsMap.put(recipe, missingIngredients);
-      }
+    // Populate missing ingredients map
+    for (Recipe recipe : cannotMakeRecipes) {
+      Map<String, Double> missingIngredients = recipe.getMissingIngredients(storage);
+      missingIngredientsMap.put(recipe, missingIngredients);
     }
 
+    // Display recipes that can be made
     if (canMakeRecipes.isEmpty()) {
       System.out.println("No recipes can be made with current ingredients.");
     } else {
       System.out.println("Recipes you can make:");
-      canMakeRecipes.forEach(recipe -> System.out.println("- "
-          + recipe.getName() + "\n"
-          + recipe.getDescription() + "\n"
-          + recipe.getIngredients() + "\n"
-          + "How to make "
-          + recipe.getName() + ":\n"
-          + recipe.getInstructions()));
+      for (Recipe recipe : canMakeRecipes) {
+        System.out.println("- " + recipe.getName());
+        System.out.println(recipe.getDescription());
+        System.out.println("Ingredients:");
+        Map<String, Double> ingredients = recipe.getIngredients();
+        Map<String, String> units = recipe.getUnits();
+        for (String ingredientName : ingredients.keySet()) {
+          double quantity = ingredients.get(ingredientName);
+          String unit = units.get(ingredientName);
+          System.out.printf("  %s: %.2f %s%n", ingredientName, quantity, unit);
+        }
+        System.out.println("Instructions:");
+        System.out.println(recipe.getInstructions());
+        System.out.println();
+      }
     }
 
+    // Display recipes that cannot be made and their missing ingredients
     if (!missingIngredientsMap.isEmpty()) {
       System.out.println("\nRecipes you cannot make and their missing ingredients:");
       for (Map.Entry<Recipe, Map<String, Double>> entry : missingIngredientsMap.entrySet()) {
@@ -315,22 +345,12 @@ public class FoodStorageUI {
           String ingredientName = ingredientEntry.getKey();
           Double quantity = ingredientEntry.getValue();
           String unit = recipe.getUnits().get(ingredientName);
-          System.out.printf("  Missing %s: %.2f %s\n", ingredientName, quantity, unit);
+          System.out.printf("  Missing %s: %.2f %s%n", ingredientName, quantity, unit);
         }
       }
     }
   }
 
-
-  private int getIntInput() {
-    while (!scanner.hasNextInt()) {
-      System.out.print("Invalid input. Please enter a number: ");
-      scanner.next();
-    }
-    int input = scanner.nextInt();
-    scanner.nextLine(); // Consume newline
-    return input;
-  }
 
   private double getDoubleInput() {
     while (!scanner.hasNextDouble()) {

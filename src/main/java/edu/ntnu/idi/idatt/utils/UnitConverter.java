@@ -80,7 +80,8 @@ public class UnitConverter {
       return STANDARD_UNIT_MAP.get(normalizedUnit);
     } else {
       throw new IllegalArgumentException("Invalid unit '" + unit
-          + "'. Supported units include volume units (ml, cl, dl, l) and weight units (mg, g, kg).");
+          + "'. "
+          + "Supported units include volume units (ml, cl, dl, l) and weight units (mg, g, kg).");
     }
   }
 
