@@ -1,6 +1,6 @@
 package edu.ntnu.idi.idatt;
 
-import edu.ntnu.idi.idatt.views.FoodStorageUI;
+import edu.ntnu.idi.idatt.views.UserInterface;
 
 /**
  * Main class to start the FoodStorage application.
@@ -14,7 +14,7 @@ public class Main {
    */
   public static void main(String[] args) {
     System.out.println("This is your fridge!");
-    FoodStorageUI ui = new FoodStorageUI();
+    UserInterface ui = new UserInterface();
     ui.init();
     ui.start();
   }

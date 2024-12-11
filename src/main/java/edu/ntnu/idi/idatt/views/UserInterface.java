@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
  * Represents the user interface for the FoodStorage application.
  */
 
-public class FoodStorageUI {
+public class UserInterface {
 
   private FoodStorage storage;
   private Cookbook cookbook;
@@ -133,7 +133,7 @@ public class FoodStorageUI {
       System.out.println("Enter ingredient name: ");
       String name = scanner.next().trim().toLowerCase();
 
-      System.out.println("Enter ingredient unit of measurement: ");
+      System.out.println("Enter ingredient unit of measurement(weight or volume): ");
       String unit = scanner.next().trim().toLowerCase();
 
       System.out.println("Enter ingredient quantity: ");
@@ -170,8 +170,6 @@ public class FoodStorageUI {
       System.out.println("Enter unit of measurement: ");
       String unit = scanner.next().trim().toLowerCase();
 
-      String standardUnit = UnitConverter.getStandardUnit(unit);
-
       System.out.println("Enter price: ");
       double pricePerUnit = getDoubleInput();
 
@@ -180,6 +178,8 @@ public class FoodStorageUI {
 
       System.out.println("Enter quantity to remove: ");
       double quantity = getDoubleInput();
+
+      String standardUnit = UnitConverter.getStandardUnit(unit);
 
       double standardQuantity = UnitConverter.convertToStandardUnits(quantity, unit);
 

@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class Ingredient {
 
-  private String name;
+  private final String name;
   private double quantity;
   private final String unit;
   private final Date bestBeforeDate;

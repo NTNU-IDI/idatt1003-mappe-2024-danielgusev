@@ -30,9 +30,8 @@ public class IngredientTest {
   public void IngredientTest2() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-      new Ingredient(null, 1.75, "liter", bestBeforeDate, 33.60);
-    });
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> new Ingredient(null, 1.75, "liter", bestBeforeDate, 33.60));
     assertEquals("Ingredient name cannot be null or empty.", exception.getMessage());
   }
 
@@ -41,9 +40,8 @@ public class IngredientTest {
   public void IngredientTest3() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-      new Ingredient("   ", 1.75, "liter", bestBeforeDate, 33.60);
-    });
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> new Ingredient("   ", 1.75, "liter", bestBeforeDate, 33.60));
     assertEquals("Ingredient name cannot be null or empty.", exception.getMessage());
   }
 
@@ -52,9 +50,8 @@ public class IngredientTest {
   public void IngredientTest4() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-      new Ingredient("Milk", -1.0, "liter", bestBeforeDate, 33.60);
-    });
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> new Ingredient("Milk", -1.0, "liter", bestBeforeDate, 33.60));
     assertEquals("Ingredient quantity cannot be negative.", exception.getMessage());
   }
 
@@ -63,9 +60,8 @@ public class IngredientTest {
   public void IngredientTest5() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-      new Ingredient("Milk", 1.75, null, bestBeforeDate, 33.60);
-    });
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> new Ingredient("Milk", 1.75, null, bestBeforeDate, 33.60));
     assertEquals("Ingredient unit cannot be null or empty.", exception.getMessage());
   }
 
@@ -74,9 +70,8 @@ public class IngredientTest {
   public void IngredientTest6() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-      new Ingredient("Milk", 1.75, "   ", bestBeforeDate, 33.60);
-    });
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> new Ingredient("Milk", 1.75, "   ", bestBeforeDate, 33.60));
     assertEquals("Ingredient unit cannot be null or empty.", exception.getMessage());
   }
 
@@ -85,9 +80,8 @@ public class IngredientTest {
   public void IngredientTest7() throws Exception {
     Date bestBeforeDate = DATE_FORMAT.parse("02.12.2024");
 
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-      new Ingredient("Milk", 1.75, "liter", bestBeforeDate, -5.0);
-    });
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> new Ingredient("Milk", 1.75, "liter", bestBeforeDate, -5.0));
     assertEquals("Price per unit cannot be negative.", exception.getMessage());
   }
 
@@ -106,9 +100,8 @@ public class IngredientTest {
     Date bestBeforeDate = DATE_FORMAT.parse("15.12.2024");
     Ingredient ingredient = new Ingredient("Butter", 250.0, "g", bestBeforeDate, 37.70);
 
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-      ingredient.setQuantity(-100.0);
-    });
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> ingredient.setQuantity(-100.0));
     assertEquals("Ingredient quantity cannot be negative.", exception.getMessage());
   }
 

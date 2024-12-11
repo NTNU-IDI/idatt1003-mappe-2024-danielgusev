@@ -82,10 +82,8 @@ public class FoodStorageTest {
     Ingredient ingredient = new Ingredient("Butter", 0.2, "kilogram", date, 30.0);
     storage.addIngredient(ingredient);
 
-    Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      storage.removeIngredient("Butter", "kilogram", 30.0, date, 0.3);
-    });
-
+    Exception exception = Assertions.assertThrows(IllegalArgumentException.class,
+        () -> storage.removeIngredient("Butter", "kilogram", 30.0, date, 0.3));
     Assertions.assertEquals("Not enough quantity to remove.", exception.getMessage());
   }
 
@@ -96,10 +94,8 @@ public class FoodStorageTest {
     Ingredient ingredient = new Ingredient("Cheese", 0.5, "kilogram", date, 50.0);
     storage.addIngredient(ingredient);
 
-    Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      storage.removeIngredient("Cheese", "kilogram", 50.0, date, -0.1);
-    });
-
+    Exception exception = Assertions.assertThrows(IllegalArgumentException.class,
+        () -> storage.removeIngredient("Cheese", "kilogram", 50.0, date, -0.1));
     Assertions.assertEquals("Quantity to remove cannot be negative.", exception.getMessage());
   }
 
@@ -108,10 +104,8 @@ public class FoodStorageTest {
   public void FoodStorageTest7() throws Exception {
     Date date = DATE_FORMAT.parse("10.12.2024");
 
-    Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      storage.removeIngredient("Milk", "liter", 20.0, date, 1.0);
-    });
-
+    Exception exception = Assertions.assertThrows(IllegalArgumentException.class,
+        () -> storage.removeIngredient("Milk", "liter", 20.0, date, 1.0));
     Assertions.assertEquals("Ingredient not found in storage.", exception.getMessage());
   }
 
@@ -184,11 +178,4 @@ public class FoodStorageTest {
     Ingredient[] ingredients = storage.listAllIngredients();
     Assertions.assertEquals(2, ingredients.length);
   }
-
-  // Continue renaming the rest of the test methods accordingly...
-
-  // public void FoodStorageTest13() { ... }
-  // public void FoodStorageTest14() { ... }
-  // etc.
-
 }

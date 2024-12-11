@@ -83,6 +83,10 @@ public class FoodStorage {
     } else {
       // Add the new ingredient
       ingredientMap.put(key, ingredient);
+
+      if (ingredient.getQuantity() == 0) {
+        ingredientMap.remove(key);
+      }
     }
   }
 
