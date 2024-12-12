@@ -25,7 +25,7 @@ STUDENT ID = 131933
 
 ## How to run the tests
 
-[//]: # (TODO: Describe how to run the tests here.) To run the tests you have to run them one by one, inside the test folder. 
+[//]:  To run the tests you have to run them one by one, inside the test folder. 
 
 ## References
 
